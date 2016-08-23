@@ -91,4 +91,9 @@ class Word
     {
         return $this->count;
     }
+
+    public function addCount($value)
+    {
+        $this->count+= $value;
+    }
 }

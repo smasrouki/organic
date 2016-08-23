@@ -25,7 +25,8 @@ class OrganicTestCommand extends ContainerAwareCommand
     {
         if(file_exists('data/ref.txt')){
             $text = new Text(file_get_contents('data/ref.txt'), ' ');
-            dump($text);
+
+            $this->getContainer()->get('word_manager')->generateFromText($text);
         }
     }
 
