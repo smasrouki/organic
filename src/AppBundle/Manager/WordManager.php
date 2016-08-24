@@ -6,12 +6,24 @@ use AppBundle\Entity\Word;
 use Component\Text\Text;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
+use AppBundle\Entity\Link;
 
 class WordManager
 {
+    /**
+     * @var EntityManager
+     */
     protected $em;
 
+    /**
+     * @var ArrayCollection
+     */
     protected $words;
+
+    /**
+     * @var ArrayCollection
+     */
+    protected $links;
 
     /**
      * WordManager constructor.
@@ -21,7 +33,8 @@ class WordManager
     {
         $this->em = $em;
 
-        $this->words = new ArrayCollection();;
+        $this->words = new ArrayCollection();
+        $this->links = new ArrayCollection();
     }
 
 
@@ -45,7 +58,25 @@ class WordManager
                 $word->setCount($count);
             }
 
-            $this->words[] = $word;
+            $this->words[$word->getValue()] = $word;
+        }
+
+        // Links
+        $previousWord = null;
+
+        foreach($text->getParts() as $value){
+            $word = $this->words[$value];
+
+            if($previousWord){
+                $link = new Link();
+
+                $link->setWord1($previousWord);
+                $link->setWord2($word);
+
+                $this->links->add($link);
+            }
+
+            $previousWord = $word;
         }
 
         if($persist){
@@ -65,5 +96,10 @@ class WordManager
     public function getRepository()
     {
         return $this->em->getRepository('AppBundle:Word');
+    }
+
+    public function getLinks()
+    {
+        return $this->links;
     }
 } 
