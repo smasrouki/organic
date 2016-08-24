@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -35,6 +36,20 @@ class Word
      */
     private $count;
 
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="Link", mappedBy="word1")
+     */
+    private $links;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->links = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * Get id
@@ -90,6 +105,40 @@ class Word
     public function getCount()
     {
         return $this->count;
+    }
+
+
+    /**
+     * Add links
+     *
+     * @param \AppBundle\Entity\Link $links
+     * @return Word
+     */
+    public function addLink(\AppBundle\Entity\Link $links)
+    {
+        $this->links[] = $links;
+
+        return $this;
+    }
+
+    /**
+     * Remove links
+     *
+     * @param \AppBundle\Entity\Link $links
+     */
+    public function removeLink(\AppBundle\Entity\Link $links)
+    {
+        $this->links->removeElement($links);
+    }
+
+    /**
+     * Get links
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getLinks()
+    {
+        return $this->links;
     }
 
     public function addCount($value)
