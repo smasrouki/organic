@@ -12,4 +12,12 @@ use Doctrine\ORM\EntityRepository;
  */
 class WordRepository extends EntityRepository
 {
+    public function getBest()
+    {
+        return $this->createQueryBuilder('w')
+            ->orderBy('w.count')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

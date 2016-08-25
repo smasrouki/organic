@@ -3,12 +3,20 @@
 namespace spec\AppBundle\Manager;
 
 use AppBundle\Entity\Link;
+use AppBundle\Repository\LinkRepository;
+use Doctrine\ORM\EntityManager;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use AppBundle\Entity\Word;
 
 class LinkManagerSpec extends ObjectBehavior
 {
+    function let(EntityManager $em, LinkRepository $repository, Link $link){
+        $this->beConstructedWith($em);
+        $em->getRepository('AppBundle:Link')->willReturn($repository);
+        $repository->findByWords(Argument::any(), Argument::any())->willReturn(null);
+    }
+
     function it_is_initializable()
     {
         $this->shouldHaveType('AppBundle\Manager\LinkManager');
@@ -38,6 +46,8 @@ class LinkManagerSpec extends ObjectBehavior
     {
         $w1->getValue()->willReturn('w1');
         $w2->getValue()->willReturn('w2');
+        $w1->addLink(Argument::any())->willReturn(null);
+        $w2->addLink(Argument::any())->willReturn(null);
 
         $this->generate($w1, $w2);
 
@@ -53,6 +63,10 @@ class LinkManagerSpec extends ObjectBehavior
         $w1->getValue()->willReturn('w1');
         $w2->getValue()->willReturn('w2');
         $w3->getValue()->willReturn('w3');
+
+        $w1->addLink(Argument::any())->willReturn(null);
+        $w2->addLink(Argument::any())->willReturn(null);
+        $w3->addLink(Argument::any())->willReturn(null);
 
         $this->generate($w1, $w2);
         $this->generate($w1, $w2);

@@ -97,4 +97,9 @@ class WordManager
     {
         return $this->linkManager->getLinks();
     }
+
+    public function getBest()
+    {
+        return $this->getRepository()->getBest();
+    }
 } 

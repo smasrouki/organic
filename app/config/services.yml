@@ -10,3 +10,6 @@ services:
     link_manager:
         class: AppBundle\Manager\LinkManager
         arguments: ["@doctrine.orm.default_entity_manager"]
+    context.initial:
+        class: AppBundle\Service\InitialContext
+        arguments: ["@word_manager"]
