@@ -2,6 +2,8 @@
 
 namespace AppBundle\Repository;
 
+use AppBundle\Entity\Link;
+use AppBundle\Entity\Word;
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -12,4 +14,20 @@ use Doctrine\ORM\EntityRepository;
  */
 class LinkRepository extends EntityRepository
 {
+    /**
+     * @param Word $w1
+     * @param Word $w2
+     * @return Link
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function findByWords(Word $w1, Word $w2)
+    {
+        return $this->createQueryBuilder('l')
+            ->andWhere('l.word1 = :w1')
+            ->setParameter('w1', $w1)
+            ->andWhere('l.word2 = :w2')
+            ->setParameter('w2', $w2)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

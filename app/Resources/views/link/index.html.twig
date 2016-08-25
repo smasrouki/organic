@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Link list</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Index</th>
+                <th>Count</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for link in links %}
+            <tr>
+                <td><a href="{{ path('link_show', { 'id': link.id }) }}">{{ link.id }}</a></td>
+                <td>{{ link.word1 }} ~ {{ link.word2 }}</td>
+                <td>{{ link.count }}</td>
+                <td>
+                    <ul>
+                        <li>
+                            <a href="{{ path('link_show', { 'id': link.id }) }}">show</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    
+{% endblock %}

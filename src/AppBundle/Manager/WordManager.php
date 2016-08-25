@@ -16,25 +16,25 @@ class WordManager
     protected $em;
 
     /**
+     * @var LinkManager
+     */
+    protected $linkManager;
+
+    /**
      * @var ArrayCollection
      */
     protected $words;
 
     /**
-     * @var ArrayCollection
-     */
-    protected $links;
-
-    /**
      * WordManager constructor.
      * @param $words
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, LinkManager $linkManager)
     {
         $this->em = $em;
+        $this->linkManager = $linkManager;
 
         $this->words = new ArrayCollection();
-        $this->links = new ArrayCollection();
     }
 
 
@@ -68,12 +68,7 @@ class WordManager
             $word = $this->words[$value];
 
             if($previousWord){
-                $link = new Link();
-
-                $link->setWord1($previousWord);
-                $link->setWord2($word);
-
-                $this->links->add($link);
+                $this->linkManager->generate($previousWord, $word);
             }
 
             $previousWord = $word;
@@ -100,6 +95,6 @@ class WordManager
 
     public function getLinks()
     {
-        return $this->links;
+        return $this->linkManager->getLinks();
     }
 } 

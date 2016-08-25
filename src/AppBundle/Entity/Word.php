@@ -39,7 +39,7 @@ class Word
     /**
      * @var ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="Link", mappedBy="word1")
+     * @ORM\OneToMany(targetEntity="Link", mappedBy="word1", cascade={"persist"})
      */
     private $links;
 
@@ -144,5 +144,10 @@ class Word
     public function addCount($value)
     {
         $this->count+= $value;
+    }
+
+    public function __toString()
+    {
+        return $this->value;
     }
 }

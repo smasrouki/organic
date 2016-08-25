@@ -9,6 +9,7 @@
                 <th>Id</th>
                 <th>Value</th>
                 <th>Count</th>
+                <th>Links</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -18,6 +19,7 @@
                 <td><a href="{{ path('word_show', { 'id': word.id }) }}">{{ word.id }}</a></td>
                 <td>{{ word.value }}</td>
                 <td>{{ word.count }}</td>
+                <td>{{ word.links|length }}</td>
                 <td>
                     <ul>
                         <li>

@@ -4,6 +4,7 @@ namespace spec\AppBundle\Entity;
 
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
+use AppBundle\Entity\Word;
 
 class LinkSpec extends ObjectBehavior
 {
@@ -12,8 +13,11 @@ class LinkSpec extends ObjectBehavior
         $this->shouldHaveType('AppBundle\Entity\Link');
     }
 
-    function it_should_generate_an_index()
+    function it_should_increment_its_count()
     {
-        
+        $this->getCount()->shouldReturn(1);
+
+        $this->increment();
+        $this->getCount()->shouldReturn(2);
     }
 }

@@ -42,6 +42,14 @@ class Link
      */
     private $count;
 
+    /**
+     * Link constructor.
+     */
+    public function __construct()
+    {
+        $this->count = 1;
+    }
+
 
     /**
      * Get id
@@ -62,6 +70,7 @@ class Link
     public function setWord1(\AppBundle\Entity\Word $word1 = null)
     {
         $this->word1 = $word1;
+        $word1->addLink($this);
 
         return $this;
     }
@@ -120,5 +129,10 @@ class Link
     public function getCount()
     {
         return $this->count;
+    }
+
+    public function increment()
+    {
+        $this->count++;
     }
 }

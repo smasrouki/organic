@@ -6,4 +6,7 @@ parameters:
 services:
     word_manager:
         class: AppBundle\Manager\WordManager
+        arguments: ["@doctrine.orm.default_entity_manager", "@link_manager"]
+    link_manager:
+        class: AppBundle\Manager\LinkManager
         arguments: ["@doctrine.orm.default_entity_manager"]
