@@ -2,17 +2,19 @@
 
 namespace spec\AppBundle\Context;
 
+use AppBundle\Strategy\EndStrategyInterface;
+use AppBundle\Strategy\InitStrategyInterface;
+use AppBundle\Strategy\PulseStrategyInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use AppBundle\Manager\WordManager;
 use AppBundle\Context\ContextInterface;
-use AppBundle\Entity\WordInterface;
 use AppBundle\Entity\Word;
 
 class BaseContextSpec extends ObjectBehavior
 {
-    function let(WordManager $wordManager){
-        $this->beConstructedWith($wordManager);
+    function let(WordManager $wordManager, InitStrategyInterface $initStrategy, EndStrategyInterface $endStrategy, PulseStrategyInterface $pulseStrategy){
+        $this->beConstructedWith($wordManager, 1, $initStrategy, $endStrategy, $pulseStrategy);
     }
 
     function it_is_initializable()
@@ -26,11 +28,32 @@ class BaseContextSpec extends ObjectBehavior
         $this->getStatus()->shouldReturn(ContextInterface::STATUS_NEW);
     }
 
-    function it_should_use_best_word_stategy_when_new_context(WordManager $wordManager, Word $w1)
+    function it_has_an_init_startegy(InitStrategyInterface $strategy)
     {
-        $wordManager->getBest()->willReturn($w1);
+        $this->setInitStrategy($strategy);
+        $this->getInitStrategy()->shouldReturn($strategy);
 
-        $this->getWord()->shouldReturn($w1);
+    }
+
+    function it_has_a_pulse_startegy(PulseStrategyInterface $strategy)
+    {
+        $this->setPulseStrategy($strategy);
+        $this->getPulseStrategy()->shouldReturn($strategy);
+
+    }
+
+    function it_has_an_end_startegy(EndStrategyInterface $strategy)
+    {
+        $this->setEndStrategy($strategy);
+        $this->getEndStrategy()->shouldReturn($strategy);
+
+    }
+
+    function it_should_use_an_init_strategy_new_context(InitStrategyInterface $initStrategy)
+    {
+        $this->getWord();
+
+        $initStrategy->execute()->shouldHaveBeenCalled();
     }
 
     function it_has_a_depth()
@@ -41,27 +64,20 @@ class BaseContextSpec extends ObjectBehavior
         $this->getDepth()->shouldReturn($depth);
     }
 
-    function it_should_use_depth_strategy_to_end_context(WordManager $wordManager, Word $w1)
+    function it_should_use_an_end_strategy(EndStrategyInterface $endStrategy)
     {
-        $wordManager->getBest()->willReturn($w1);
-
-        $this->setDepth(2);
-
-        $this->getStatus()->shouldReturn(ContextInterface::STATUS_NEW);
-
-        $this->getWord();
-        $this->getWord();
-
-        $this->getStatus()->shouldReturn(ContextInterface::STATUS_END);
+        $endStrategy->execute()->willReturn(true);
 
         $this->getWord()->shouldReturn(null);
+
+        $endStrategy->execute()->shouldHaveBeenCalled();
     }
 
-    function it_should_use_best_link_strategy_when_new_context(WordManager $wordManager, Word $w1, Word $w2)
+    function it_should_use_a_pulse_strategy_to_context(PulseStrategyInterface $pulseStrategy, Word $w1)
     {
-        $wordManager->getBestLink($w1)->willReturn($w2);
+        $this->getWord($w1);
 
-        $this->getWord($w1)->shouldReturn($w2);
+        $pulseStrategy->execute($w1)->shouldHaveBeenCalled();
     }
 
     function it_should_update_itself_from_a_given_value(WordManager $wordManager, Word $w1, Word $w2)

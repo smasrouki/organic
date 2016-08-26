@@ -11,6 +11,8 @@ interface ContextInterface
     const STATUS_CONTINUE = 2;
 
     /**
+     * @param WordInterface|null $word
+     *
      * @return WordInterface
      */
     public function getWord(WordInterface $word = null);

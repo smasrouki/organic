@@ -58,5 +58,4 @@ class OrganicContextCommand extends ContainerAwareCommand
             $response = $helper->ask($input, $output, $question);
         } while($response);
     }
-
 }
