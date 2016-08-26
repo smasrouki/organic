@@ -102,4 +102,18 @@ class WordManager
     {
         return $this->getRepository()->getBest();
     }
+
+    public function getBestLink(Word $word)
+    {
+        /**
+         * @var Link
+         */
+        $link = $word->getLinks()->first();
+
+        if($link){
+            return $link->getWord2();
+        }
+
+        return null;
+    }
 } 

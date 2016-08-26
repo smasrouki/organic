@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="word")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\WordRepository")
  */
-class Word
+class Word implements WordInterface
 {
     /**
      * @var int
@@ -40,6 +40,7 @@ class Word
      * @var ArrayCollection
      *
      * @ORM\OneToMany(targetEntity="Link", mappedBy="word1", cascade={"persist"})
+     * @ORM\OrderBy({"count" = "DESC"})
      */
     private $links;
 

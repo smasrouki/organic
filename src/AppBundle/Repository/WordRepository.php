@@ -15,7 +15,7 @@ class WordRepository extends EntityRepository
     public function getBest()
     {
         return $this->createQueryBuilder('w')
-            ->orderBy('w.count')
+            ->orderBy('w.count', 'DESC')
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
