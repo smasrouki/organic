@@ -24,9 +24,9 @@ class LinkRepository extends EntityRepository
     {
         return $this->createQueryBuilder('l')
             ->andWhere('l.word1 = :w1')
-            ->setParameter('w1', $w1)
+            ->setParameter('w1', $w1->getId())
             ->andWhere('l.word2 = :w2')
-            ->setParameter('w2', $w2)
+            ->setParameter('w2', $w2->getId())
             ->getQuery()
             ->getOneOrNullResult();
     }

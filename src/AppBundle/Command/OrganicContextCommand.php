@@ -29,22 +29,28 @@ class OrganicContextCommand extends ContainerAwareCommand
 
         $response = null;
 
+        /**
+         * @var AppBundle\Manager\WordManager
+         */
+        $wordManager = $this->getContainer()->get('word_manager');
+
+        try{
+            $context = $this->getContainer()->get($contextName);
+        } catch (\Exception $e) {
+            $output->writeln($e->getMessage());
+            exit();
+        }
+
         do{
-            try{
-                $context = $this->getContainer()->get($contextName);
-            } catch (\Exception $e) {
-                $output->writeln('"'.$contextName.'" does not exist !');
-                exit();
-            }
+            $word = null;
 
             if($response){
-                $context->update($response);
+                $word = $wordManager->findByValue($response);
             } elseif($input->getOption('value')){
-                $context->update($input->getOption('value'));
+                $word = $wordManager->findByValue($input->getOption('value'));
             }
 
             $text = '';
-            $word = null;
 
             do{
                 $word = $context->getWord($word);

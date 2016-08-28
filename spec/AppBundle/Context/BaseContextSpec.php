@@ -13,8 +13,8 @@ use AppBundle\Entity\Word;
 
 class BaseContextSpec extends ObjectBehavior
 {
-    function let(WordManager $wordManager, InitStrategyInterface $initStrategy, EndStrategyInterface $endStrategy, PulseStrategyInterface $pulseStrategy){
-        $this->beConstructedWith($wordManager, 1, $initStrategy, $endStrategy, $pulseStrategy);
+    function let(InitStrategyInterface $initStrategy, EndStrategyInterface $endStrategy, PulseStrategyInterface $pulseStrategy){
+        $this->beConstructedWith($initStrategy, $endStrategy, $pulseStrategy);
     }
 
     function it_is_initializable()
@@ -23,26 +23,21 @@ class BaseContextSpec extends ObjectBehavior
         $this->shouldImplement('AppBundle\Context\ContextInterface');
     }
 
-    function it_should_have_a_context_status()
-    {
-        $this->getStatus()->shouldReturn(ContextInterface::STATUS_NEW);
-    }
-
-    function it_has_an_init_startegy(InitStrategyInterface $strategy)
+    function it_has_an_init_strategy(InitStrategyInterface $strategy)
     {
         $this->setInitStrategy($strategy);
         $this->getInitStrategy()->shouldReturn($strategy);
 
     }
 
-    function it_has_a_pulse_startegy(PulseStrategyInterface $strategy)
+    function it_has_a_pulse_strategy(PulseStrategyInterface $strategy)
     {
         $this->setPulseStrategy($strategy);
         $this->getPulseStrategy()->shouldReturn($strategy);
 
     }
 
-    function it_has_an_end_startegy(EndStrategyInterface $strategy)
+    function it_has_an_end_strategy(EndStrategyInterface $strategy)
     {
         $this->setEndStrategy($strategy);
         $this->getEndStrategy()->shouldReturn($strategy);
@@ -54,14 +49,6 @@ class BaseContextSpec extends ObjectBehavior
         $this->getWord();
 
         $initStrategy->execute()->shouldHaveBeenCalled();
-    }
-
-    function it_has_a_depth()
-    {
-        $depth = Argument::any();
-
-        $this->setDepth($depth);
-        $this->getDepth()->shouldReturn($depth);
     }
 
     function it_should_use_an_end_strategy(EndStrategyInterface $endStrategy)
@@ -78,21 +65,5 @@ class BaseContextSpec extends ObjectBehavior
         $this->getWord($w1);
 
         $pulseStrategy->execute($w1)->shouldHaveBeenCalled();
-    }
-
-    function it_should_update_itself_from_a_given_value(WordManager $wordManager, Word $w1, Word $w2)
-    {
-        $value = Argument::any();
-
-        $this->setDepth(2);
-
-        $wordManager->findByValue($value)->willReturn($w1);
-
-        $this->update($value);
-        $this->getWord()->shouldReturn($w1);
-
-        $wordManager->getBestLink($w1)->willReturn($w2);
-
-        $this->getWord($w1)->shouldReturn($w2);
     }
 }

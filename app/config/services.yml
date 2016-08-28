@@ -10,8 +10,16 @@ services:
     link_manager:
         class: AppBundle\Manager\LinkManager
         arguments: ["@doctrine.orm.default_entity_manager"]
-    context.base:
-        class: AppBundle\Context\BaseContext
-        arguments: ["@word_manager"]
+    end_strategy.depth:
+        class: AppBundle\Strategy\EndStrategy\DepthStrategy
         calls:
             - [setDepth, [2]]
+    pulse_strategy.best_link:
+        class: AppBundle\Strategy\PulseStrategy\BestLinkStrategy
+        arguments: ["@word_manager"]
+    init_strategy.best_word:
+        class: AppBundle\Strategy\InitStrategy\BestWordStrategy
+        arguments: ["@word_manager"]
+    context.base:
+        class: AppBundle\Context\BaseContext
+        arguments: ["@init_strategy.best_word", "@end_strategy.depth", "@pulse_strategy.best_link"]
