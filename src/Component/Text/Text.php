@@ -157,4 +157,17 @@ class Text
     {
         return $this->occurrences;
     }
+
+    /**
+     * @param $part
+     * @return null
+     */
+    public function getCount($part)
+    {
+        if(isset($this->occurrences[$part])){
+            return $this->occurrences[$part];
+        }
+
+        return null;
+    }
 }

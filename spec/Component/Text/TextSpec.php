@@ -123,4 +123,13 @@ class TextSpec extends ObjectBehavior
 
         $this->getParts()->shouldReturn(array('w1', 'w2', 'w3', 'w4', 'w5', 'w6'));
     }
+
+    function it_should_return_occurrences_count_for_a_given_part()
+    {
+        $content = '#w1#w2#w3#w1#w3';
+        $this->beConstructedWith($content, '#');
+
+        $this->getCount('w1')->shouldReturn(2);
+        $this->getCount('w2')->shouldReturn(1);
+    }
 }

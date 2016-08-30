@@ -4,3 +4,6 @@ parameters:
 #    parameter_name: value
 
 services:
+    word_manager:
+        class: AppBundle\Manager\WordManager
+        arguments: ["@doctrine.orm.default_entity_manager"]
