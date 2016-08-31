@@ -12,11 +12,4 @@ use Doctrine\ORM\EntityRepository;
  */
 class WordRepository extends EntityRepository
 {
-    public function removeAll()
-    {
-        return $this->createQueryBuilder('w')
-            ->delete()
-            ->getQuery()
-            ->execute();
-    }
 }

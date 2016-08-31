@@ -27,11 +27,12 @@ class OrganicPulseCommand extends ContainerAwareCommand
         // Entity manager
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
 
-        // Words
+        // Managers
         $wordManager = $this->getContainer()->get('word_manager');
+        $packageManager = $this->getContainer()->get('package_manager');
 
         // Packages: Clean
-        // TODO: Package manager
+        $packageManager->removeAll();
 
         // Packages: Array
         $lastCount = 0;
@@ -42,7 +43,6 @@ class OrganicPulseCommand extends ContainerAwareCommand
 
         foreach($wordManager->getRepository()->findAll() as $word)
         {
-            //dump($word);exit();
             if($lastCount && $word->getCount() > $lastCount){
                 $packageCount++;
                 $packages[$packageCount] = array();
@@ -54,13 +54,7 @@ class OrganicPulseCommand extends ContainerAwareCommand
 
         // Packages: Objects
         foreach($packages as $words){
-            $package = new Package();
-
-            foreach($words as $word){
-                $package->addWord($word);
-            }
-
-            $em->persist($package);
+            $packageManager->create($words);
         }
 
         $em->flush();

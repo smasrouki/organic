@@ -2,47 +2,25 @@
 
 namespace AppBundle\Manager;
 
-
 use AppBundle\Entity\Word;
-use Doctrine\ORM\EntityManager;
 
-class WordManager
+class WordManager extends BaseManager
 {
     /**
-     * @var EntityManager
+     * @inheritdoc
      */
-    protected $em;
+    protected function getEntityName()
+    {
+        return 'AppBundle:Word';
+    }
 
     /**
-     * WordManager constructor.
+     * Create a Word entity
+     * @param string $value
+     * @param integer$count
      *
-     * @param EntityManager $em
+     * @return Word
      */
-    public function __construct(EntityManager $em)
-    {
-        $this->em = $em;
-    }
-
-    public function getRepository()
-    {
-        return $this->em->getRepository('AppBundle:Word');
-    }
-
-    public function removeAll()
-    {
-        return $this->getRepository()->removeAll();
-    }
-
-    public function persist(Word $word)
-    {
-        $this->em->persist($word);
-    }
-
-    public function flush()
-    {
-        $this->em->flush();
-    }
-
     public function create($value, $count)
     {
         $word = new Word();
