@@ -2,7 +2,7 @@
 
 namespace AppBundle\Command;
 
-use AppBundle\Entity\Word;
+use AppBundle\Entity\Package;
 use Component\Text\Text;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -24,28 +24,45 @@ class OrganicPulseCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        // Content
-        $filename = 'data/ref.txt';
-        if (file_exists($filename)) {
-            $content = file_get_contents($filename);
-        }
-
-        // Text
-        $text = new Text($content, ' ');
+        // Entity manager
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
 
         // Words
         $wordManager = $this->getContainer()->get('word_manager');
 
-        // Words: Clean
-        $wordManager->removeAll();
+        // Packages: Clean
+        // TODO: Package manager
 
-        // Words: Create
-        foreach($text->getParts() as $value){
-            $count = $text->getCount($value);
+        // Packages: Array
+        $lastCount = 0;
 
-            $wordManager->create($value, $count);
+        $packages = array();
+        $packageCount = 1;
+        $packages[$packageCount] = array();
+
+        foreach($wordManager->getRepository()->findAll() as $word)
+        {
+            //dump($word);exit();
+            if($lastCount && $word->getCount() > $lastCount){
+                $packageCount++;
+                $packages[$packageCount] = array();
+            }
+
+            $packages[$packageCount][] = $word;
+            $lastCount = $word->getCount();
         }
 
-        $wordManager->flush();
+        // Packages: Objects
+        foreach($packages as $words){
+            $package = new Package();
+
+            foreach($words as $word){
+                $package->addWord($word);
+            }
+
+            $em->persist($package);
+        }
+
+        $em->flush();
     }
 }

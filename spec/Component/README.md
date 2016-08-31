@@ -1,0 +1,2 @@
+Dependecies:
+Doctrine\Common\Collections

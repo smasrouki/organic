@@ -14,4 +14,8 @@ AppBundle\Entity\Word:
             length: 255
         count:
             type: integer
+    manyToOne:
+        package:
+            targetEntity: Package
+            inversedBy: words
     lifecycleCallbacks: {  }

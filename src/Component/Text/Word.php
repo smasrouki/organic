@@ -15,6 +15,11 @@ class Word
     protected $count;
 
     /**
+     * @var Package
+     */
+    protected $package;
+
+    /**
      * @return string
      */
     public function getValue()
@@ -44,5 +49,21 @@ class Word
     public function setCount($count)
     {
         $this->count = $count;
+    }
+
+    /**
+     * @return Package
+     */
+    public function getPackage()
+    {
+        return $this->package;
+    }
+
+    /**
+     * @param Package $package
+     */
+    public function setPackage(Package $package)
+    {
+        $this->package = $package;
     }
 }

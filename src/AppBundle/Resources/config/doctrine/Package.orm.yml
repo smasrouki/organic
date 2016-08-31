@@ -1,0 +1,15 @@
+AppBundle\Entity\Package:
+    type: entity
+    table: null
+    repositoryClass: AppBundle\Repository\PackageRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    oneToMany:
+        words:
+            targetEntity: Word
+            mappedBy: package
+    lifecycleCallbacks: {  }
