@@ -4,6 +4,8 @@ namespace AppBundle\Command;
 
 use AppBundle\Entity\Package;
 use Component\Text\Text;
+use Component\Text\WordPackager;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -24,9 +26,6 @@ class OrganicPulseCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        // Entity manager
-        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
-
         // Managers
         $wordManager = $this->getContainer()->get('word_manager');
         $packageManager = $this->getContainer()->get('package_manager');
@@ -34,29 +33,15 @@ class OrganicPulseCommand extends ContainerAwareCommand
         // Packages: Clean
         $packageManager->removeAll();
 
-        // Packages: Array
-        $lastCount = 0;
+        // Word Packager
+        $words = new ArrayCollection($wordManager->getRepository()->findAll());
+        $wordPackager = new WordPackager($words);
 
-        $packages = array();
-        $packageCount = 1;
-        $packages[$packageCount] = array();
-
-        foreach($wordManager->getRepository()->findAll() as $word)
-        {
-            if($lastCount && $word->getCount() > $lastCount){
-                $packageCount++;
-                $packages[$packageCount] = array();
-            }
-
-            $packages[$packageCount][] = $word;
-            $lastCount = $word->getCount();
-        }
-
-        // Packages: Objects
-        foreach($packages as $words){
+        // Packages
+        foreach($wordPackager->getPackages() as $words){
             $packageManager->create($words);
         }
 
-        $em->flush();
+        $packageManager->flush();
     }
 }

@@ -22,8 +22,23 @@ class PackageManager extends BaseManager
             $package->addWord($word);
         }
 
-        $this->persist();
+        $this->persist($package);
 
         return $package;
     }
+
+    public function removeAll()
+    {
+        $this->em->getRepository('AppBundle:Word')
+            ->createQueryBuilder('w')
+            ->update()
+            ->set('w.package', ':package')
+            ->setParameter('package', null)
+            ->getQuery()
+            ->execute();
+
+        parent::removeAll();
+    }
+
+
 }

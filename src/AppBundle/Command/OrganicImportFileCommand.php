@@ -6,7 +6,11 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+
+use Doctrine\Common\Collections\ArrayCollection;
+
 use Component\Text\Text;
+use Component\Text\WordPackager;
 
 class OrganicImportFileCommand extends ContainerAwareCommand
 {
@@ -33,20 +37,35 @@ class OrganicImportFileCommand extends ContainerAwareCommand
         // Text
         $text = new Text($content, ' ');
 
-        // Words
+        // Managers
         $wordManager = $this->getContainer()->get('word_manager');
+        $packageManager = $this->getContainer()->get('package_manager');
 
-        // Words: Clean
+        // Clean
+        $packageManager->removeAll();
         $wordManager->removeAll();
 
-        // Words: Create
+        // Words
+        $words = new ArrayCollection();
+
         foreach($text->getParts() as $value){
             $count = $text->getCount($value);
 
-            $wordManager->create($value, $count);
+            $word = $wordManager->create($value, $count);
+
+            $words->add($word);
         }
 
         $wordManager->flush();
+
+        // Packages
+        $wordPackager = new WordPackager($words);
+
+        foreach($wordPackager->getPackages() as $words){
+            $packageManager->create($words);
+        }
+
+        $packageManager->flush();
 
         $output->writeln("<info>File imported successfully</info>");
     }
