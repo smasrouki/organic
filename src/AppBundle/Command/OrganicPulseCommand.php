@@ -2,10 +2,7 @@
 
 namespace AppBundle\Command;
 
-use AppBundle\Entity\Package;
-use Component\Text\Text;
-use Component\Text\WordPackager;
-use Doctrine\Common\Collections\ArrayCollection;
+use AppBundle\Entity\Word;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -28,20 +25,18 @@ class OrganicPulseCommand extends ContainerAwareCommand
     {
         // Managers
         $wordManager = $this->getContainer()->get('word_manager');
-        $packageManager = $this->getContainer()->get('package_manager');
 
-        // Packages: Clean
-        $packageManager->removeAll();
+        // Table Helper
+        $table = $this->getHelper('table');
+        $table->setHeaders(array('Word', 'Count', 'Type'));
 
-        // Word Packager
-        $words = new ArrayCollection($wordManager->getRepository()->findAll());
-        $wordPackager = new WordPackager($words);
-
-        // Packages
-        foreach($wordPackager->getPackages() as $words){
-            $packageManager->create($words);
+        /**
+         * @var $word Word
+         */
+        foreach($wordManager->getRepository()->findAll() as $word){
+            $table->addRow(array($word->getValue(), $word->getCount(), $word->getTypeLabel()));
         }
 
-        $packageManager->flush();
+        $table->render($output);
     }
 }

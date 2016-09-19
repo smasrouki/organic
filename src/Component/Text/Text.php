@@ -16,6 +16,8 @@ class Text
 
     protected $occurrences;
 
+    protected $maxCount = 0;
+
     function __construct($content, $separator = null)
     {
         $this->content = $content;
@@ -78,6 +80,13 @@ class Text
                 }
 
                 $this->occurrences[$part]++;
+            }
+
+            // Max count
+            foreach($this->occurrences as $count){
+                if($count > $this->maxCount){
+                    $this->maxCount = $count;
+                }
             }
         }
     }
@@ -169,5 +178,10 @@ class Text
         }
 
         return null;
+    }
+
+    public function getMaxCount()
+    {
+        return $this->maxCount;
     }
 }

@@ -6,6 +6,24 @@ use AppBundle\Entity\Word;
 
 class WordManager extends BaseManager
 {
+    protected $maxCount;
+
+    /**
+     * @return mixed
+     */
+    public function getMaxCount()
+    {
+        return $this->maxCount;
+    }
+
+    /**
+     * @param mixed $maxCount
+     */
+    public function setMaxCount($maxCount)
+    {
+        $this->maxCount = $maxCount;
+    }
+
     /**
      * @inheritdoc
      */
@@ -27,6 +45,7 @@ class WordManager extends BaseManager
 
         $word->setValue($value);
         $word->setCount($count);
+        $word->setType(round($count/$this->maxCount));
 
         $this->persist($word);
 

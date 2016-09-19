@@ -20,6 +20,11 @@ class Word
     protected $package;
 
     /**
+     * @var integer
+     */
+    protected $type = 0;
+
+    /**
      * @return string
      */
     public function getValue()
@@ -65,5 +70,21 @@ class Word
     public function setPackage(Package $package)
     {
         $this->package = $package;
+    }
+
+    /**
+     * @return int
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param int $type
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
     }
 }

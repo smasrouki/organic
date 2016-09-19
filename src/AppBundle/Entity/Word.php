@@ -10,6 +10,14 @@ use Component\Text\Word as WordModel;
  */
 class Word extends WordModel
 {
+    const TYPE_OBJECT = 0;
+    const TYPE_DECORATOR = 1;
+
+    protected static $typeLabels = array(
+        self::TYPE_OBJECT => 'Object',
+        self::TYPE_DECORATOR => 'Decorator',
+    );
+
     /**
      * @var int
      */
@@ -24,5 +32,14 @@ class Word extends WordModel
     public function getId()
     {
         return $this->id;
+    }
+
+    public function getTypeLabel()
+    {
+        if(isset(self::$typeLabels[$this->getType()])){
+            return self::$typeLabels[$this->getType()];
+        }
+
+        return 'N/A';
     }
 }

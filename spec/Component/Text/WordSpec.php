@@ -33,6 +33,13 @@ class WordSpec extends ObjectBehavior
     {
         $this->setPackage($package);
         $this->getPackage()->shouldReturn($package);
+    }
 
+    function it_has_a_type()
+    {
+        $type = Argument::any();
+
+        $this->setType($type);
+        $this->getType()->shouldReturn($type);
     }
 }

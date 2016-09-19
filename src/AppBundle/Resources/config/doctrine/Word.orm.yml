@@ -14,6 +14,9 @@ AppBundle\Entity\Word:
             length: 255
         count:
             type: integer
+        type:
+            type: integer
+            column: word_type
     manyToOne:
         package:
             targetEntity: Package

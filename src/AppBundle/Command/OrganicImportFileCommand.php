@@ -39,6 +39,8 @@ class OrganicImportFileCommand extends ContainerAwareCommand
 
         // Managers
         $wordManager = $this->getContainer()->get('word_manager');
+        $wordManager->setMaxCount($text->getMaxCount());
+
         $packageManager = $this->getContainer()->get('package_manager');
 
         // Clean

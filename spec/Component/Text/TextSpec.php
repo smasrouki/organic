@@ -132,4 +132,12 @@ class TextSpec extends ObjectBehavior
         $this->getCount('w1')->shouldReturn(2);
         $this->getCount('w2')->shouldReturn(1);
     }
+
+    function it_should_return_max_occurrences_count()
+    {
+        $content = '#w1#w2#w3#w1#w3';
+        $this->beConstructedWith($content, '#');
+
+        $this->getMaxCount()->shouldReturn(2);
+    }
 }
