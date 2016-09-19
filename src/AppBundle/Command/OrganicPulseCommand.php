@@ -2,12 +2,14 @@
 
 namespace AppBundle\Command;
 
-use AppBundle\Entity\Word;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+
+use AppBundle\Entity\Package;
+use AppBundle\Entity\Word;
 
 class OrganicPulseCommand extends ContainerAwareCommand
 {
@@ -24,17 +26,24 @@ class OrganicPulseCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         // Managers
-        $wordManager = $this->getContainer()->get('word_manager');
+        $packageManager = $this->getContainer()->get('package_manager');
 
         // Table Helper
         $table = $this->getHelper('table');
         $table->setHeaders(array('Word', 'Count', 'Type'));
 
         /**
-         * @var $word Word
+         * @var $package Package
          */
-        foreach($wordManager->getRepository()->findAll() as $word){
-            $table->addRow(array($word->getValue(), $word->getCount(), $word->getTypeLabel()));
+        foreach($packageManager->getRepository()->findAll() as $package){
+            /**
+             * @var $word Word
+             */
+            foreach($package->getWords() as $word){
+                $table->addRow(array($word->getValue(), $word->getCount(), $word->getTypeLabel()));
+            }
+
+            $table->addRow(array('----------------', '----------------', '----------------'));
         }
 
         $table->render($output);

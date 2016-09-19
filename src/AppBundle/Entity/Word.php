@@ -10,12 +10,11 @@ use Component\Text\Word as WordModel;
  */
 class Word extends WordModel
 {
-    const TYPE_OBJECT = 0;
-    const TYPE_DECORATOR = 1;
-
     protected static $typeLabels = array(
         self::TYPE_OBJECT => 'Object',
         self::TYPE_DECORATOR => 'Decorator',
+        self::TYPE_LINK => 'Link',
+        self::TYPE_PRESET => 'Preset',
     );
 
     /**

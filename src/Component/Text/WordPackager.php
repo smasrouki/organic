@@ -24,7 +24,7 @@ class WordPackager
     {
         $this->words = $words;
         $this->packages = array();
-        $this->count = 1;
+        $this->count = 0;
         $this->wordCount = 0;
 
         $this->init();
@@ -57,13 +57,30 @@ class WordPackager
     protected function init()
     {
         foreach($this->words as $word){
-            if($this->wordCount && $word->getCount() > $this->wordCount){
+            if($word->getCount() > $this->wordCount){
                 $this->count++;
                 $this->packages[$this->count] = array();
             }
 
             $this->packages[$this->count][] = $word;
             $this->wordCount = $word->getCount();
+        }
+
+        $this->checkWords();
+    }
+
+    protected function checkWords()
+    {
+        foreach($this->packages as $words){
+            // Preset
+            if(1 == count($words)){
+                $words[0]->setType(Word::TYPE_PRESET);
+            }
+
+            // Link
+            if (Word::TYPE_OBJECT == $words[0]->getType()){
+                $words[0]->setType(Word::TYPE_LINK);
+            }
         }
     }
 }
