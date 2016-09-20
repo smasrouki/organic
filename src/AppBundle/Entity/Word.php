@@ -14,7 +14,7 @@ class Word extends WordModel
         self::TYPE_OBJECT => 'Object',
         self::TYPE_DECORATOR => 'Decorator',
         self::TYPE_LINK => 'Link',
-        self::TYPE_PRESET => 'Preset',
+        self::TYPE_POINTER => 'Pointer',
     );
 
     /**

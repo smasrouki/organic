@@ -97,6 +97,6 @@ class WordPackagerSpec extends ObjectBehavior
         $w1->setType(Word::TYPE_LINK)->shouldNotHaveBeenCalled();
         $w2->setType(Word::TYPE_LINK)->shouldHaveBeenCalled();
         $w3->setType(Word::TYPE_LINK)->shouldNotHaveBeenCalled();
-        $w4->setType(Word::TYPE_PRESET)->shouldHaveBeenCalled();
+        $w4->setType(Word::TYPE_POINTER)->shouldHaveBeenCalled();
     }
 }

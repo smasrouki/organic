@@ -7,7 +7,7 @@ class Word
     const TYPE_OBJECT = 0;
     const TYPE_DECORATOR = 1;
     const TYPE_LINK = 2;
-    const TYPE_PRESET = 3;
+    const TYPE_POINTER = 3;
 
     /**
      * @var string

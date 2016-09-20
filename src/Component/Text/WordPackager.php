@@ -74,7 +74,7 @@ class WordPackager
         foreach($this->packages as $words){
             // Preset
             if(1 == count($words)){
-                $words[0]->setType(Word::TYPE_PRESET);
+                $words[0]->setType(Word::TYPE_POINTER);
             }
 
             // Link
