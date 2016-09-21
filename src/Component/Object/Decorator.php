@@ -22,7 +22,11 @@ class Decorator extends Object{
      */
     public function setSubject(Object $subject)
     {
-        $this->subject = $subject;
+        if($this->subject instanceof Decorator){
+            $this->subject->setSubject($subject);
+        } else {
+            $this->subject = $subject;
+        }
     }
 
     public function process()
@@ -40,7 +44,9 @@ class Decorator extends Object{
     {
         $proxy = parent::toProxy();
 
-        $proxy->setSubject($this->subject);
+        if($this->subject){
+            $proxy->setSubject($this->subject);
+        }
 
         return $proxy;
     }

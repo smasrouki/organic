@@ -57,7 +57,7 @@ class WordPackager
     protected function init()
     {
         foreach($this->words as $word){
-            if($word->getCount() > $this->wordCount){
+            if($word->getCount() > $this->wordCount || count($this->packages[$this->count]) == 3){
                 $this->count++;
                 $this->packages[$this->count] = array();
             }
@@ -72,12 +72,6 @@ class WordPackager
     protected function checkWords()
     {
         foreach($this->packages as $words){
-            // Preset
-            if(1 == count($words)){
-                $words[0]->setType(Word::TYPE_POINTER);
-            }
-
-            // Link
             if (Word::TYPE_OBJECT == $words[0]->getType()){
                 $words[0]->setType(Word::TYPE_LINK);
             }

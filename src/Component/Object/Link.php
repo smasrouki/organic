@@ -20,7 +20,7 @@ class Link extends Decorator{
     /**
      * @param Object $preset
      */
-    public function setPreset($preset)
+    public function setPreset(Object $preset)
     {
         $this->preset = $preset;
     }
@@ -40,7 +40,9 @@ class Link extends Decorator{
     {
         $proxy = parent::toProxy();
 
-        $proxy->setPreset($this->preset);
+        if($this->preset){
+            $proxy->setPreset($this->preset);
+        }
 
         return $proxy;
     }

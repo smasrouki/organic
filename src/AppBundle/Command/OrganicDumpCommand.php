@@ -33,7 +33,7 @@ class OrganicDumpCommand  extends ContainerAwareCommand
              * @var $word Word
              */
             foreach($package->getWords() as $word){
-                $row = $package->getId().';'.$word->getValue().';'.$word->getCount().';'.$word->getType();
+                $row = $package->getId().';'.$word->getValue().';'.$word->getCount().';'.$word->getType().';'.$package->getWords()->count();
                 $data .= $row."\n";
             }
         }

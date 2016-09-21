@@ -6,7 +6,6 @@ use AppBundle\Entity\Word;
 use Component\Object\Decorator;
 use Component\Object\Link;
 use Component\Object\Object;
-use Component\Object\Pointer;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -26,16 +25,16 @@ class OrganicCrawlCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        // TODO Decorator push/pop + string compare + l affliction/ enoch ame juste
         // Input / Ouput
         $io = new SymfonyStyle($input, $output);
-        $headers = array('Type', 'Value', 'Process');
+        $headers = array('Type', 'Value', 'Process', 'Status');
 
         // Managers
         $wordManager = $this->getContainer()->get('word_manager');
 
         // Vars
-        $pointer = null;
+        $originalString = '';
+        $compare = 'OK';
         $decorator = null;
         $link = null;
         $object = null;
@@ -47,56 +46,70 @@ class OrganicCrawlCommand extends ContainerAwareCommand
          */
         foreach ($wordManager->getRepository()->findAll() as $word){
             $value = $word->getValue();
+            if($originalString != ''){
+                $originalString .= ' ';
+            }
+            $originalString .= $value;
 
             switch($word->getType()){
-                case Word::TYPE_POINTER:
-                    $pointer = new Pointer($value);
-                    break;
                 case Word::TYPE_DECORATOR:
                     if($decorator){
                         $newDecorator =  new Decorator($value);
                         $decorator->setSubject($newDecorator);
-                        $decorator = $newDecorator;
-                        dump($decorator);
                     } else {
                         $decorator = new Decorator($value);
                     }
 
                     break;
                 case Word::TYPE_LINK:
-                    $link = new Link($value);
-                    $link->setPreset($current);
+
+                    if($link){
+                        $newLink = new Link($value);
+                        $link->setSubject($newLink);
+                    } else {
+                        $link = new Link($value);
+                    }
+
+                    if($current){
+                        $link->setPreset($current);
+                    }
+
+                    $current = $link;
+
                     break;
                 case Word::TYPE_OBJECT:
                     $object = new Object($value);
+
                     if($decorator){
                         $decorator->setSubject($object);
-                        if($pointer){
-                            $pointer->setSubject($decorator);
-                            $current = $pointer;
-                            $pointer = null;
-                        } elseif($proxy) {
+
+                        if($current){
+                            $current = $current->toProxy();
                             $current->addComplement($decorator);
+                            $link = null;
                         } else {
-                            $current = $proxy = $current->toProxy();
-                            $current->addComplement($decorator);
+                            $current = $decorator;
                         }
 
                         $decorator = null;
-                    } elseif($link){
+                    } elseif ($link){
                         $link->setSubject($object);
                         $current = $link;
                         $link = null;
-                        $proxy = null;
-                    } else {
-                        dump($object);exit();
+                    } elseif ($current) {
+                        $current = $current->toProxy();
+                        $current->addComplement($object);
+                    }
+
+                    if($current){
+                        $compare = $originalString == $current->process() ? 'OK' : 'ERROR';
                     }
 
                     break;
             }
             $io->section($word->getValue().' ('.$word->getTypeLabel().')');
             if($current){
-                $rows = array(array(get_class($current), $current->getValue(), $current->process()));
+                $rows = array(array(get_class($current), $current->getValue(), $current->process(), $compare));
                 $io->table($headers, $rows);
             }
 

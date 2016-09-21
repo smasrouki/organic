@@ -29,4 +29,9 @@ class Proxy extends Link {
 
         return $value;
     }
+
+    public function toProxy()
+    {
+        return $this;
+    }
 } 

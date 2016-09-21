@@ -97,6 +97,34 @@ class WordPackagerSpec extends ObjectBehavior
         $w1->setType(Word::TYPE_LINK)->shouldNotHaveBeenCalled();
         $w2->setType(Word::TYPE_LINK)->shouldHaveBeenCalled();
         $w3->setType(Word::TYPE_LINK)->shouldNotHaveBeenCalled();
-        $w4->setType(Word::TYPE_POINTER)->shouldHaveBeenCalled();
+        $w4->setType(Word::TYPE_LINK)->shouldHaveBeenCalled();
+    }
+
+    function it_should_create_at_max_three_words_packages(Word $w1, Word $w2, Word $w3, Word $w4)
+    {
+        $this->getPackages()->shouldReturn(array());
+
+        $w1->getCount()->willReturn(103);
+        $w1->setType(Argument::any())->willReturn(null);
+        $w1->getType()->willReturn(0);
+        $w2->getCount()->willReturn(17);
+        $w2->setType(Argument::any())->willReturn(null);
+        $w2->getType()->willReturn(0);
+        $w3->getCount()->willReturn(5);
+        $w3->setType(Argument::any())->willReturn(null);
+        $w3->getType()->willReturn(0);
+        $w4->getCount()->willReturn(1);
+        $w4->setType(Argument::any())->willReturn(null);
+        $w4->getType()->willReturn(0);
+
+        $words = new ArrayCollection();
+        $words->add($w1->getWrappedObject());
+        $words->add($w2->getWrappedObject());
+        $words->add($w3->getWrappedObject());
+        $words->add($w4->getWrappedObject());
+
+        $this->setWords($words);
+
+        $this->getPackages()->shouldReturn(array('1' => array($w1, $w2, $w3), '2' => array($w4)));
     }
 }
