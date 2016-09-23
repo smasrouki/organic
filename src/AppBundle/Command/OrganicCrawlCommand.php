@@ -20,11 +20,14 @@ class OrganicCrawlCommand extends ContainerAwareCommand
         $this
             ->setName('organic:crawl')
             ->setDescription('...')
+            ->addOption('all')
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        ini_set('xdebug.max_nesting_level', 5000);
+
         // Input / Ouput
         $io = new SymfonyStyle($input, $output);
         $headers = array('Type', 'Value', 'Process', 'Status');
@@ -62,43 +65,35 @@ class OrganicCrawlCommand extends ContainerAwareCommand
 
                     break;
                 case Word::TYPE_LINK:
-
-                    if($link){
-                        $newLink = new Link($value);
-                        $link->setSubject($newLink);
-                    } else {
-                        $link = new Link($value);
-                    }
+                    $link = new Link($value);
 
                     if($current){
                         $link->setPreset($current);
                     }
 
-                    $current = $link;
-
                     break;
+                case Word::TYPE_MODIFIER:
                 case Word::TYPE_OBJECT:
                     $object = new Object($value);
 
                     if($decorator){
                         $decorator->setSubject($object);
-
-                        if($current){
+                        if($current instanceof Link){
                             $current = $current->toProxy();
                             $current->addComplement($decorator);
-                            $link = null;
                         } else {
                             $current = $decorator;
                         }
-
                         $decorator = null;
                     } elseif ($link){
                         $link->setSubject($object);
                         $current = $link;
                         $link = null;
-                    } elseif ($current) {
+                    } elseif ($current instanceof Link){
                         $current = $current->toProxy();
                         $current->addComplement($object);
+                    } elseif ($current == null) {
+                        $decorator = new Decorator($value);
                     }
 
                     if($current){
@@ -107,18 +102,37 @@ class OrganicCrawlCommand extends ContainerAwareCommand
 
                     break;
             }
-            $io->section($word->getValue().' ('.$word->getTypeLabel().')');
-            if($current){
-                $rows = array(array(get_class($current), $current->getValue(), $current->process(), $compare));
-                $io->table($headers, $rows);
-            }
 
-            // Continue
-            $continue = $io->confirm('Continue ?');
+            if($input->getOption('all')){
+                if($compare == 'ERROR'){
+                    $io->error('Crawl error');
 
-            if(false === $continue){
-                break;
+                    $io->section($word->getValue().' ('.$word->getTypeLabel().')');
+                    if($current){
+                        $rows = array(array(get_class($current), $current->getValue(), substr($current->process(), -100), $compare));
+                        $io->table($headers, $rows);
+                    }
+
+                    exit();
+                }
+            } else {
+                $io->section($word->getValue().' ('.$word->getTypeLabel().')');
+                if($current){
+                    $rows = array(array(get_class($current), $current->getValue(), $current->process(), $compare));
+                    $io->table($headers, $rows);
+                }
+
+                // Continue
+                $continue = $io->confirm('Continue ?');
+
+                if(false === $continue){
+                    break;
+                }
             }
+        }
+
+        if($input->getOption('all')){
+            $io->success('Crawl success');
         }
     }
 

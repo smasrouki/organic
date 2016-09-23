@@ -37,11 +37,4 @@ class Object {
 
         return $proxy;
     }
-
-    public function toBridge()
-    {
-        $bridge = new Bridge($this->value);
-
-        return $bridge;
-    }
 } 
